@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TextInput, ScrollView, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
-import { auth } from '../../firebase'; // Import Firebase authentication object
+import { auth } from '../../firebase'; 
 import { useNavigation } from '@react-navigation/native';
 
 const Home = () => {
@@ -38,7 +38,6 @@ const Home = () => {
                         <View style={styles.promotionItem}>
                             <Text style={styles.promotionText}>Promotion 3</Text>
                         </View>
-                        {/* Add more slider items as needed */}
                     </ScrollView>
                 </View>
                 <View style={styles.speciality}>
@@ -137,7 +136,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 20,
         marginBottom: 10,
-        width: '48%', // Adjust width to fit two buttons per row
+        width: '48%',
     },
     specialityButtonText: {
         color: 'white',

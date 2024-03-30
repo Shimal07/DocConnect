@@ -10,7 +10,7 @@ const Welcome = () => {
     }
 
     const handleSignUpNavigation = () => {
-        navigation.navigate('Register'); // Navigate to the SignUp screen
+        navigation.navigate('Register'); // Navigate to the SignUp 
     }
 
     return (

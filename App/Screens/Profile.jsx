@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
-import { auth } from '../../firebase'; // Import Firebase authentication object
+import { auth } from '../../firebase';
 import { useNavigation } from '@react-navigation/native';
 
 const Profile = () => {

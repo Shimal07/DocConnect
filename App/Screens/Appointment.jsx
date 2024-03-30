@@ -4,7 +4,6 @@ import { AntDesign } from '@expo/vector-icons';
 
 const Appointment = () => {
   const handleAppointmentClick = (appointmentId) => {
-    // Handle click event for the appointment
     console.log("Clicked on appointment:", appointmentId);
   };
 
@@ -24,7 +23,6 @@ const Appointment = () => {
         <TouchableOpacity onPress={() => handleAppointmentClick(3)} style={styles.appointmentItem}>
           <Text style={styles.appointmentText}>Appointment 3</Text>
         </TouchableOpacity>
-        {/* Add more appointments as needed */}
       </ScrollView>
       <TouchableOpacity style={styles.addButton}>
         <AntDesign name="plus" size={24} color="white" />

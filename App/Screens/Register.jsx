@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from './../../firebase'; // Import Firebase authentication object
+import { auth } from './../../firebase'; 
 import { useNavigation } from '@react-navigation/native';
 
 const SignUp = () => {
