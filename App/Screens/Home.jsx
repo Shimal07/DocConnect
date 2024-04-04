@@ -28,7 +28,6 @@ const Home = () => {
             <ScrollView style={styles.scrollView}>
                 <View style={styles.promotions}>
                     <ScrollView horizontal contentContainerStyle={styles.sliderContainer}>
-                        {/* Slider content */}
                         <View style={styles.promotionItem}>
                             <Text style={styles.promotionText}>Promotion 1</Text>
                         </View>

@@ -9,9 +9,6 @@ const Welcome = () => {
         navigation.navigate('Login'); // Navigate to the Login screen
     }
 
-    const handleSignUpNavigation = () => {
-        navigation.navigate('Register'); // Navigate to the SignUp 
-    }
 
     return (
         <View style={styles.container}>
