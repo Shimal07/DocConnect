@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet,View } from 'react-native';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from './../../firebase'; 
 import { useNavigation } from '@react-navigation/native';
+import InputField from '../components/InputField';
+import Button from '../components/Button';
+import AuthContainer from '../components/AuthContainer';
 
 const SignUp = () => {
     const [fullName, setFullName] = useState('');
@@ -35,15 +38,14 @@ const SignUp = () => {
     }
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior='padding'>
-            <View style={styles.inputContainer}>
-                <TextInput 
+        <AuthContainer>
+        <InputField 
                     placeholder='Full Name'
                     value={fullName}
                     onChangeText={text => setFullName(text)}
                     style={styles.input}
                 />
-                <TextInput 
+                <InputField 
                     placeholder='Email'
                     value={email}
                     onChangeText={text => setEmail(text)}
@@ -52,76 +54,35 @@ const SignUp = () => {
                     autoCapitalize='none'
                     autoCorrect={false}
                 />
-                <TextInput 
+                <InputField   
                     placeholder='Password'
                     value={password}
                     onChangeText={text => setPassword(text)}
                     secureTextEntry
                     style={styles.input}
                 />
-                <TextInput 
+                <InputField 
                     placeholder='Confirm Password'
                     value={confirmPassword}
                     onChangeText={text => setConfirmPassword(text)}
                     secureTextEntry
                     style={styles.input}
                 />
-            </View>
-            <View style={styles.btnCon}>
-                <TouchableOpacity onPress={handleSignUp} style={styles.registerButton}>
-                    <Text style={styles.buttonText}>Register</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-                    <Text style={styles.buttonText}>Back</Text>
-                </TouchableOpacity>
-            </View>
-        </KeyboardAvoidingView>
+                <View style={styles.btnCon}>
+                    <Button onPress={handleSignUp} buttonText="Register"/>
+                    <Button onPress={handleBack} buttonText="Back"/>
+                </View>
+        </AuthContainer>
+       
     );
 };
 
 export default SignUp;
 
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        justifyContent:'center',
-        alignItems:'center',
-        backgroundColor: '#007260', // Solid background color
-    },
-    inputContainer:{
-        width:'80%',
-        marginBottom: 20,
-    },
-    input:{
-        backgroundColor:'#fff',
-        marginBottom: 10,
-        padding: 15,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 10,
-        fontSize: 16,
-    },
     btnCon:{
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         width: '80%',
-    },
-    registerButton:{
-        backgroundColor: '#fff',
-        paddingVertical: 15,
-        paddingHorizontal: 30,
-        borderRadius: 10,
-    },
-    backButton:{
-        backgroundColor: '#ccc',
-        paddingVertical: 15,
-        paddingHorizontal: 30,
-        borderRadius: 10,
-    },
-    buttonText:{
-        color: '#007260',
-        textAlign: 'center',
-        fontSize: 16,
-        fontWeight: 'bold',
     },
 });
