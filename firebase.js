@@ -1,7 +1,7 @@
-import { initializeApp } from "firebase/app";
-import { initializeAuth, getAuth } from "firebase/auth";
+import { initializeApp } from 'firebase/app';
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBRyNVu2pYWovFXBtnPAL6ic1LjVc6-mjs",
     authDomain: "docconnect-e2e11.firebaseapp.com",
@@ -11,8 +11,8 @@ const firebaseConfig = {
     appId: "1:832275680033:web:17ec043c5857e217280c60"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = initializeAuth(app);
+const auth = getAuth(app);
+const db = getFirestore(app);
+export {auth,db};
 
-export { auth };

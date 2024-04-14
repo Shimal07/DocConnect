@@ -1,10 +1,10 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { signOut } from "firebase/auth";
 import { auth } from './../../firebase';
 import { useNavigation } from '@react-navigation/native';
 
-const ProfileScreen = () => {
+const AppointmentManagementScreen = () => {
   const navigation = useNavigation(); // Get navigation object
 
   const handleSignOut = () => {
@@ -19,28 +19,34 @@ const ProfileScreen = () => {
   };
 
   return (
-    <TouchableOpacity style={styles.signOutBtn} onPress={handleSignOut}>
-      <Text style={styles.signOutText}>Sign Out</Text>
-    </TouchableOpacity>
+    <View style={styles.container}>
+      <Text>Appointment Management Screen</Text>
+      <TouchableOpacity style={styles.signOutBtn} onPress={handleSignOut}>
+        <Text style={styles.signOutText}>Sign Out</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  signOutBtn: {
-    position: 'absolute',
-    bottom: 20,
-    width: '80%',
-    backgroundColor: '#e74c3c', // Red color
-    borderRadius: 25,
-    height: 50,
+  container: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    alignSelf: 'center',
+  },
+  signOutBtn: {
+    marginTop: 20,
+    backgroundColor: '#e74c3c',
+    borderRadius: 25,
+    height: 50,
+    width: '80%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   signOutText: {
-    color: '#fff', // White color
+    color: '#fff',
     fontSize: 16,
   },
 });
 
-export default ProfileScreen;
+export default AppointmentManagementScreen;
