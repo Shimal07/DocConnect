@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from './../../firebase'; 
+import { Button, TextBtn } from '../Components/Button';
+import InputField from '../Components/InputField';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // Sign in functionality
   const handleSignIn = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -34,9 +37,12 @@ const LoginScreen = ({ navigation }) => {
       }
     } catch (error) {
       console.error("Sign-in failed:", error);
+      // Display alert for incorrect username or password
+      Alert.alert('Error', 'Invalid email or password. Please try again.');
     }
   };
 
+  // Navigate to signup Page 
   const handleSignupNavigation = () => {
     navigation.navigate('Signup');
   };
@@ -44,29 +50,21 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.logo}>Your App Name</Text>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.inputText}
-          placeholder="Email"
-          placeholderTextColor="#003f5c"
-          onChangeText={(text) => setEmail(text)}
-        />
-      </View>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.inputText}
-          placeholder="Password"
-          placeholderTextColor="#003f5c"
-          secureTextEntry
-          onChangeText={(text) => setPassword(text)}
-        />
-      </View>
-      <TouchableOpacity style={styles.loginBtn} onPress={handleSignIn}>
-        <Text style={styles.loginText}>LOGIN</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleSignupNavigation}>
-        <Text style={styles.signupText}>Register now</Text>
-      </TouchableOpacity>
+      <InputField
+        style={styles.inputText}
+        placeholder="Email"
+        placeholderTextColor="#003f5c"
+        onChangeText={(text) => setEmail(text)}
+      />
+      <InputField
+        style={styles.inputText}
+        placeholder="Password"
+        placeholderTextColor="#003f5c"
+        secureTextEntry
+        onChangeText={(text) => setPassword(text)}
+      />
+      <Button onPress={handleSignIn} buttonText="Login" />
+      <TextBtn onPress={handleSignupNavigation} buttonText="Register now" />
     </View>
   );
 };
@@ -83,36 +81,6 @@ const styles = StyleSheet.create({
     fontSize: 50,
     color: '#00b894', // Green color
     marginBottom: 40,
-  },
-  inputView: {
-    width: '80%',
-    backgroundColor: '#f2f2f2', // Light gray background
-    borderRadius: 25,
-    height: 50,
-    marginBottom: 20,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  inputText: {
-    height: 50,
-    color: '#003f5c', // Dark green color
-  },
-  loginBtn: {
-    width: '80%',
-    backgroundColor: '#00b894', // Green color
-    borderRadius: 25,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  loginText: {
-    color: '#fff', // White color
-  },
-  signupText: {
-    color: '#00b894', // Green color
-    marginTop: 10,
   },
 });
 
