@@ -10,6 +10,8 @@ import HomeScreen from './app/screens/Home';
 import AdminScreen from './app/screens/Admin';
 import UserScreen from './app/screens/UserMG';
 import BookingScreen from './app/screens/AppointmentManagement';
+import { Entypo } from '@expo/vector-icons';
+import { View } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -28,22 +30,46 @@ const Main = () => {
   );
 };
 
+const screenOptions ={
+  tabBarShowLabel:false,
+  headerShown:false,
+  tabBarStyle:{
+   position:'relative',
+   bottom:0,
+   right:0,
+   left:0,
+   elevation:0,
+   height:60,
+   backgroundColor:"#007260"
+  }
+}
+
+const renderTabIcon = (iconName, focused) => (
+  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+    {iconName === 'home' && <Entypo name="home" size={24} color={focused ? "#fff" : "black"}  />}
+    {iconName === 'appointment' && <Entypo name="book" size={24} color={focused ? "#fff" : "black"} />}
+    {iconName === 'profile' && <Entypo name="user" size={24} color={focused ? "#fff" : "black"} />}
+    {iconName === 'users' && <Entypo name="users" size={24} color={focused ? "#fff" : "black"} />}
+  </View>
+);
+
 const MainTabs = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Appointment" component={AppointmentBookingScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+    <Tab.Navigator screenOptions={screenOptions}>
+      <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('home', focused) }}/>
+      <Tab.Screen name="Appointment" component={AppointmentBookingScreen} options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('appointment', focused) }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('profile', focused) }}/>
     </Tab.Navigator>
   );
 };
 
 const AdminTabs = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Usermg" component={UserScreen} />
-      <Tab.Screen name="Booking" component={BookingScreen} />
+    <Tab.Navigator screenOptions={screenOptions}>
+      <Tab.Screen name="Usermg" component={UserScreen} options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('users', focused) }}/>
+      <Tab.Screen name="Booking" component={BookingScreen} options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('appointment', focused) }}/>
     </Tab.Navigator>
   );
 };
+
 export default Main;
