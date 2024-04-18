@@ -35,11 +35,7 @@ const screenOptions ={
   headerShown:false,
   tabBarStyle:{
    position:'relative',
-   bottom:0,
-   right:0,
-   left:0,
-   elevation:0,
-   height:60,
+   height:"10%",
    backgroundColor:"#007260"
   }
 }

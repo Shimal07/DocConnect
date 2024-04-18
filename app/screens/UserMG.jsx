@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, Modal, StyleSheet } from 'react-native';
 import { db, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from './../../firebase';
-
+import addData from '../Util/addData';
+import deleteData from '../Util/deleteData';
+import updateData from '../Util/updateData';
 const UserMG = () => {
   const [doctorName, setDoctorName] = useState('');
   const [specialty, setSpecialty] = useState('');
@@ -13,38 +15,25 @@ const UserMG = () => {
     refreshDoctorList();
   }, []); // Fetch doctor list on component mount
 
+  //Add Doctors Function
   const addDoctor = async () => {
     try {
       if (!doctorName.trim() || !specialty.trim()) {
         console.log('Doctor name and specialty cannot be empty');
         return;
       }
-
-      // Add doctor to Firestore
-      const docRef = await addDoc(collection(db, "doctors"), {
-        name: doctorName,
-        specialty: specialty
-      });
-
-      console.log('Doctor added successfully with ID: ', docRef.id);
-
-      // Clear input fields after adding doctor
+      await addData('doctors', { name: doctorName, specialty: specialty }, refreshDoctorList);
       setDoctorName('');
       setSpecialty('');
-
-      // Refresh the doctor list
-      refreshDoctorList();
     } catch (error) {
       console.error('Error adding doctor:', error);
     }
   };
-
+  //Delete Doctors Function
   const deleteDoctor = async (id) => {
     try {
-      await deleteDoc(doc(db, "doctors", id));
-      console.log('Doctor deleted successfully:', id);
-      // After deleting the doctor, refresh the doctor list
-      refreshDoctorList();
+      // Call the deleteData function to delete the doctor
+      await deleteData('doctors', id, refreshDoctorList);
     } catch (error) {
       console.error('Error deleting doctor:', error);
     }
@@ -57,10 +46,8 @@ const UserMG = () => {
         return;
       }
 
-      await updateDoc(doc(db, "doctors", selectedDoctor.id), {
-        name: doctorName,
-        specialty: specialty
-      });
+      // Call the updateData function to update the doctor
+      await updateData('doctors', selectedDoctor.id, { name: doctorName, specialty: specialty }, refreshDoctorList);
 
       console.log('Doctor updated successfully:', selectedDoctor.id);
 
