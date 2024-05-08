@@ -56,7 +56,7 @@ const SignupScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>Your App Name</Text>
+      <Text style={styles.logo}>Register</Text>
       <InputField
         style={styles.inputText}
         placeholder="Full Name"

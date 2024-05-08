@@ -1,192 +1,256 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, Modal, StyleSheet } from 'react-native';
-import { db, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from './../../firebase';
+import { View, Text, TextInput, TouchableOpacity, FlatList, Modal, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { db, collection, getDocs, onSnapshot } from './../../firebase';
 import addData from '../Util/addData';
 import deleteData from '../Util/deleteData';
 import updateData from '../Util/updateData';
+import { Picker } from '@react-native-picker/picker';
+
+// An array of specialty suggestions
+const specialtySuggestions = [
+  'Cardiology',
+  'Dermatology',
+  'Neurology',
+  'Orthopedics',
+  'Pediatrics',
+  'Dentistry',
+];
+
+// An array of days of the week
+const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+// Functional component for managing user interface and functionality related to doctors
 const UserMG = () => {
+  // State variables using useState hook
   const [doctorName, setDoctorName] = useState('');
   const [specialty, setSpecialty] = useState('');
+  const [selectedDay, setSelectedDay] = useState('');
   const [doctors, setDoctors] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
+  // useEffect hook to fetch the list of doctors from Firestore database
   useEffect(() => {
-    refreshDoctorList();
+    const unsubscribeSnapshot = onSnapshot(collection(db, 'doctors'), (snapshot) => {
+      const updatedDoctors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setDoctors(updatedDoctors);
+    });
+
+    return () => {
+      unsubscribeSnapshot();
+    };
   }, []); // Fetch doctor list on component mount
 
-  //Add Doctors Function
+  // Function to add a new doctor to the database
   const addDoctor = async () => {
     try {
-      if (!doctorName.trim() || !specialty.trim()) {
-        console.log('Doctor name and specialty cannot be empty');
+      if (!doctorName.trim() || !specialty.trim() || !selectedDay.trim()) {
+        console.log('Doctor name, specialty, and day cannot be empty');
         return;
       }
-      await addData('doctors', { name: doctorName, specialty: specialty }, refreshDoctorList);
+      // Add "Dr." in front of the doctor's name
+      const formattedDoctorName = `Dr. ${doctorName}`;
+      await addData('doctors', { name: formattedDoctorName, specialty: specialty, day: selectedDay });
       setDoctorName('');
       setSpecialty('');
+      setSelectedDay('');
     } catch (error) {
       console.error('Error adding doctor:', error);
     }
   };
-  //Delete Doctors Function
+
+  // Function to delete a doctor from the database
   const deleteDoctor = async (id) => {
     try {
-      // Call the deleteData function to delete the doctor
-      await deleteData('doctors', id, refreshDoctorList);
+      await deleteData('doctors', id);
     } catch (error) {
       console.error('Error deleting doctor:', error);
     }
   };
 
+  // Function to update details of a doctor in the database
   const editDoctor = async () => {
     try {
       if (!selectedDoctor || !selectedDoctor.id) {
         console.error('Invalid doctor selected for editing');
         return;
       }
-
-      // Call the updateData function to update the doctor
-      await updateData('doctors', selectedDoctor.id, { name: doctorName, specialty: specialty }, refreshDoctorList);
-
+      await updateData('doctors', selectedDoctor.id, { name: doctorName, specialty: specialty, day: selectedDay });
       console.log('Doctor updated successfully:', selectedDoctor.id);
-
-      // Close the modal
       setModalVisible(false);
-
-      // Refresh the doctor list
-      refreshDoctorList();
     } catch (error) {
       console.error('Error editing doctor:', error);
     }
   };
 
+  // Function to open the modal for editing a doctor
+  const openEditModal = (doctor) => {
+    setSelectedDoctor(doctor);
+    setDoctorName(doctor.name);
+    setSpecialty(doctor.specialty);
+    setSelectedDay(doctor.day);
+    setModalVisible(true);
+  };
+
+  // Function to refresh the list of doctors from the database
   const refreshDoctorList = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "doctors"));
-      const updatedDoctors = [];
-      querySnapshot.forEach((doc) => {
-        updatedDoctors.push({ id: doc.id, ...doc.data() });
-      });
+      const updatedDoctors = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setDoctors(updatedDoctors);
     } catch (error) {
       console.error('Error fetching doctors:', error);
     }
   };
 
-  const openEditModal = (doctor) => {
-    setSelectedDoctor(doctor);
-    setDoctorName(doctor.name);
-    setSpecialty(doctor.specialty);
-    setModalVisible(true);
-  };
-
+  // JSX code for the UI components
   return (
-    <View style={styles.container}>
-      {/* Top Section: Add Doctor */}
-      <View style={styles.section}>
-        <Text style={styles.heading}>Add Doctor</Text>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            value={doctorName}
-            onChangeText={setDoctorName}
-            placeholder="Enter Doctor's Name"
-            placeholderTextColor="#003f5c"
-          />
-        </View>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            value={specialty}
-            onChangeText={setSpecialty}
-            placeholder="Enter Doctor's Specialty"
-            placeholderTextColor="#003f5c"
-          />
-        </View>
-        <TouchableOpacity style={styles.addButton} onPress={addDoctor}>
-          <Text style={styles.buttonText}>ADD DOCTOR</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Bottom Section: List of Doctors */}
-      <View style={[styles.section, { flex: 1 }]}>
-        <Text style={styles.heading}>Doctors List:</Text>
-        <FlatList
-          data={doctors}
-          renderItem={({ item }) => (
-            <View style={styles.doctorItem}>
-              <Text style={styles.doctorName}>{item.name} - {item.specialty}</Text>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={() => deleteDoctor(item.id)} style={styles.deleteButton}>
-                  <Text style={styles.buttonText}>Delete</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => openEditModal(item)} style={styles.editButton}>
-                  <Text style={styles.buttonText}>Edit</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-          keyExtractor={(item) => item.id}
-          style={styles.doctorList}
-        />
-      </View>
-
-      {/* Edit Doctor Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(false);
-        }}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalHeading}>Edit Doctor</Text>
+    <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+      <View style={styles.container}>
+        {/* Top Section: Add Doctor */}
+        <Text style={styles.head}>Admin Panel</Text>
+        <View style={styles.section}>
+          <Text style={styles.heading}>Add Doctor</Text>
+          <View style={styles.inputView}>
             <TextInput
-              style={styles.modalInput}
+              style={styles.inputText}
               value={doctorName}
               onChangeText={setDoctorName}
               placeholder="Enter Doctor's Name"
               placeholderTextColor="#003f5c"
             />
-            <TextInput
-              style={styles.modalInput}
-              value={specialty}
-              onChangeText={setSpecialty}
-              placeholder="Enter Doctor's Specialty"
-              placeholderTextColor="#003f5c"
-            />
-            <TouchableOpacity style={styles.modalButton} onPress={editDoctor}>
-              <Text style={styles.buttonText}>SAVE</Text>
-            </TouchableOpacity>
           </View>
+          <View style={styles.inputView}>
+            <Picker
+              selectedValue={specialty}
+              onValueChange={(itemValue) => setSpecialty(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Select Specialty" value="" />
+              {specialtySuggestions.map((item, index) => (
+                <Picker.Item key={index} label={item} value={item} />
+              ))}
+            </Picker>
+          </View>
+          <View style={styles.inputView}>
+            <Picker
+              selectedValue={selectedDay}
+              onValueChange={(itemValue) => setSelectedDay(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Select Day" value="" />
+              {daysOfWeek.map((day, index) => (
+                <Picker.Item key={index} label={day} value={day} />
+              ))}
+            </Picker>
+          </View>
+          <TouchableOpacity style={styles.addButton} onPress={addDoctor}>
+            <Text style={styles.buttonText}>ADD DOCTOR</Text>
+          </TouchableOpacity>
         </View>
-      </Modal>
-    </View>
+
+        {/* Bottom Section: List of Doctors */}
+        <View style={[styles.section, { flex: 1 }]}>
+          <Text style={styles.heading}>Doctors List:</Text>
+          <FlatList
+            data={doctors}
+            renderItem={({ item }) => (
+              <View style={styles.doctorItem}>
+                <View style={styles.doctorInfo}>
+                  <Text style={styles.doctorName}>{item.name}</Text>
+                  <Text style={styles.doctorDetail}>{item.specialty} - {item.day}</Text>
+                </View>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity onPress={() => deleteDoctor(item.id)} style={styles.deleteButton}>
+                    <Text style={styles.buttonText}>Delete</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => openEditModal(item)} style={styles.editButton}>
+                    <Text style={styles.buttonText}>Edit</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            keyExtractor={(item) => item.id}
+            style={styles.doctorList}
+          />
+        </View>
+
+        {/* Edit Doctor Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(false);
+          }}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalHeading}>Edit Doctor</Text>
+              <TextInput
+                style={styles.modalInput}
+                value={doctorName}
+                onChangeText={setDoctorName}
+                placeholder="Enter Doctor's Name"
+                placeholderTextColor="#003f5c"
+              />
+              <Picker
+                selectedValue={specialty}
+                onValueChange={(itemValue) => setSpecialty(itemValue)}
+                style={styles.modalPicker}
+              >
+                <Picker.Item label="Select Specialty" value="" />
+                {specialtySuggestions.map((item, index) => (
+                  <Picker.Item key={index} label={item} value={item} />
+                ))}
+              </Picker>
+              <Picker
+                selectedValue={selectedDay}
+                onValueChange={(itemValue) => setSelectedDay(itemValue)}
+                style={styles.modalPicker}
+              >
+                <Picker.Item label="Select Day" value="" />
+                {daysOfWeek.map((day, index) => (
+                  <Picker.Item key={index} label={day} value={day} />
+                ))}
+              </Picker>
+              <TouchableOpacity style={styles.modalButton} onPress={editDoctor}>
+                <Text style={styles.buttonText}>SAVE</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#2c3e50', // Darker background color
+    backgroundColor: '#2c3e50', 
+  },
+  head:{
+    fontSize: 35, 
+    fontWeight: 'bold',
+    color: '#fff', 
+    textAlign: 'center', 
+    marginTop: "20%", 
+    marginBottom:"10%"
   },
   section: {
     paddingHorizontal: 20,
-    paddingTop: "20%",
     paddingBottom: 10,
     marginBottom: 20,
   },
   heading: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff', // White color
+    color: '#fff', 
     marginBottom: 10,
   },
   inputView: {
-    backgroundColor: '#f2f2f2', // Light gray background
+    backgroundColor: '#f2f2f2', 
     borderRadius: 25,
     height: 50,
     marginBottom: 20,
@@ -195,10 +259,10 @@ const styles = StyleSheet.create({
   },
   inputText: {
     height: 50,
-    color: '#003f5c', // Dark green color
+    color: '#003f5c', 
   },
   addButton: {
-    backgroundColor: '#00b894', // Green color
+    backgroundColor: '#00b894', 
     borderRadius: 25,
     height: 50,
     alignItems: 'center',
@@ -218,22 +282,29 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: 10,
   },
+  doctorInfo: {
+    flex: 1,
+  },
   doctorName: {
-    color: '#003f5c', // Dark green color
+    color: '#003f5c', 
     fontSize: 16,
+  },
+  doctorDetail: {
+    color: '#555',
+    fontSize: 14,
   },
   buttonContainer: {
     flexDirection: 'row',
   },
   deleteButton: {
-    backgroundColor: '#e74c3c', // Red color
+    backgroundColor: '#e74c3c', 
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 5,
     marginLeft: 10,
   },
   editButton: {
-    backgroundColor: '#3498db', // Blue color
+    backgroundColor: '#3498db',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 5,
@@ -258,11 +329,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalInput: {
-    backgroundColor: '#f2f2f2',
-    borderRadius: 25,
     height: 50,
-    marginBottom: 20,
+    color: '#003f5c', 
+    backgroundColor: '#f2f2f2', 
+    borderRadius: 25,
     paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  modalPicker: {
+    height: 50,
+    color: '#003f5c', 
+    backgroundColor: '#f2f2f2', 
+    borderRadius: 25,
+    marginBottom: 20,
   },
   modalButton: {
     backgroundColor: '#00b894',
@@ -270,6 +349,10 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
 

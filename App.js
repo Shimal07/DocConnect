@@ -6,7 +6,6 @@ import LoginScreen from './app/screens/Login';
 import SignupScreen from './app/screens/SignUp';
 import AppointmentBookingScreen from './app/screens/Appointment';
 import ProfileScreen from './app/screens/Profile';
-import HomeScreen from './app/screens/Home';
 import AdminScreen from './app/screens/Admin';
 import UserScreen from './app/screens/UserMG';
 import BookingScreen from './app/screens/AppointmentManagement';
@@ -42,7 +41,7 @@ const screenOptions ={
 
 const renderTabIcon = (iconName, focused) => (
   <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-    {iconName === 'home' && <Entypo name="home" size={24} color={focused ? "#fff" : "black"}  />}
+    
     {iconName === 'appointment' && <Entypo name="book" size={24} color={focused ? "#fff" : "black"} />}
     {iconName === 'profile' && <Entypo name="user" size={24} color={focused ? "#fff" : "black"} />}
     {iconName === 'users' && <Entypo name="users" size={24} color={focused ? "#fff" : "black"} />}
@@ -52,7 +51,7 @@ const renderTabIcon = (iconName, focused) => (
 const MainTabs = () => {
   return (
     <Tab.Navigator screenOptions={screenOptions}>
-      <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('home', focused) }}/>
+      {/* <Tab.Screen name="Home" component={HomeScreen}  options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('home', focused) }}/> */}
       <Tab.Screen name="Appointment" component={AppointmentBookingScreen} options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('appointment', focused) }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('profile', focused) }}/>
     </Tab.Navigator>
@@ -62,7 +61,7 @@ const MainTabs = () => {
 const AdminTabs = () => {
   return (
     <Tab.Navigator screenOptions={screenOptions}>
-      <Tab.Screen name="Usermg" component={UserScreen} options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('users', focused) }}/>
+      <Tab.Screen name="Usermg" component={UserScreen}  options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('users', focused) }}/>
       <Tab.Screen name="Booking" component={BookingScreen} options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('appointment', focused) }}/>
     </Tab.Navigator>
   );
