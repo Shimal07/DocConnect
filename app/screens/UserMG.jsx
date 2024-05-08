@@ -6,6 +6,7 @@ import deleteData from '../Util/deleteData';
 import updateData from '../Util/updateData';
 import { Picker } from '@react-native-picker/picker';
 
+
 // An array of specialty suggestions
 const specialtySuggestions = [
   'Cardiology',
@@ -28,6 +29,7 @@ const UserMG = () => {
   const [doctors, setDoctors] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
+
 
   // useEffect hook to fetch the list of doctors from Firestore database
   useEffect(() => {
@@ -54,10 +56,12 @@ const UserMG = () => {
       setDoctorName('');
       setSpecialty('');
       setSelectedDay('');
+
     } catch (error) {
       console.error('Error adding doctor:', error);
     }
   };
+
 
   // Function to delete a doctor from the database
   const deleteDoctor = async (id) => {
@@ -68,19 +72,21 @@ const UserMG = () => {
     }
   };
 
-  // Function to update details of a doctor in the database
+
   const editDoctor = async () => {
     try {
       if (!selectedDoctor || !selectedDoctor.id) {
         console.error('Invalid doctor selected for editing');
         return;
       }
+
       await updateData('doctors', selectedDoctor.id, { name: doctorName, specialty: specialty, day: selectedDay });
       console.log('Doctor updated successfully:', selectedDoctor.id);
       setModalVisible(false);
     } catch (error) {
       console.error('Error editing doctor:', error);
     }
+
   };
 
   // Function to open the modal for editing a doctor
@@ -105,6 +111,7 @@ const UserMG = () => {
 
   // JSX code for the UI components
   return (
+
     <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
       <View style={styles.container}>
         {/* Top Section: Add Doctor */}
@@ -222,12 +229,14 @@ const UserMG = () => {
         </Modal>
       </View>
     </TouchableWithoutFeedback>
+
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+
     backgroundColor: '#2c3e50', 
   },
   head:{
@@ -240,17 +249,20 @@ const styles = StyleSheet.create({
   },
   section: {
     paddingHorizontal: 20,
+
     paddingBottom: 10,
     marginBottom: 20,
   },
   heading: {
     fontSize: 18,
     fontWeight: 'bold',
+
     color: '#fff', 
     marginBottom: 10,
   },
   inputView: {
     backgroundColor: '#f2f2f2', 
+
     borderRadius: 25,
     height: 50,
     marginBottom: 20,
@@ -262,7 +274,9 @@ const styles = StyleSheet.create({
     color: '#003f5c', 
   },
   addButton: {
+
     backgroundColor: '#00b894', 
+
     borderRadius: 25,
     height: 50,
     alignItems: 'center',
@@ -329,6 +343,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalInput: {
+
     height: 50,
     color: '#003f5c', 
     backgroundColor: '#f2f2f2', 
@@ -342,6 +357,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2', 
     borderRadius: 25,
     marginBottom: 20,
+
   },
   modalButton: {
     backgroundColor: '#00b894',
@@ -349,10 +365,12 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
+
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
+
   },
 });
 

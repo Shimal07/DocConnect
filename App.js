@@ -34,6 +34,7 @@ const screenOptions ={
   headerShown:false,
   tabBarStyle:{
    position:'relative',
+
    height:"10%",
    backgroundColor:"#007260"
   }
@@ -41,7 +42,7 @@ const screenOptions ={
 
 const renderTabIcon = (iconName, focused) => (
   <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-    
+
     {iconName === 'appointment' && <Entypo name="book" size={24} color={focused ? "#fff" : "black"} />}
     {iconName === 'profile' && <Entypo name="user" size={24} color={focused ? "#fff" : "black"} />}
     {iconName === 'users' && <Entypo name="users" size={24} color={focused ? "#fff" : "black"} />}
@@ -51,7 +52,9 @@ const renderTabIcon = (iconName, focused) => (
 const MainTabs = () => {
   return (
     <Tab.Navigator screenOptions={screenOptions}>
+
       {/* <Tab.Screen name="Home" component={HomeScreen}  options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('home', focused) }}/> */}
+
       <Tab.Screen name="Appointment" component={AppointmentBookingScreen} options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('appointment', focused) }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('profile', focused) }}/>
     </Tab.Navigator>
@@ -61,7 +64,9 @@ const MainTabs = () => {
 const AdminTabs = () => {
   return (
     <Tab.Navigator screenOptions={screenOptions}>
+
       <Tab.Screen name="Usermg" component={UserScreen}  options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('users', focused) }}/>
+
       <Tab.Screen name="Booking" component={BookingScreen} options={{ headerShown: false, tabBarIcon: ({ focused }) => renderTabIcon('appointment', focused) }}/>
     </Tab.Navigator>
   );

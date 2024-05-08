@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from './../../firebase';
+
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -17,6 +19,7 @@ const LoginScreen = ({ navigation }) => {
     });
     return unsubscribe;
   }, []); // Empty dependency array to ensure useEffect runs only once
+
 
   const checkUserRole = async (userId) => {
     try {
@@ -51,20 +54,24 @@ const LoginScreen = ({ navigation }) => {
       checkUserRole(user.uid);
     } catch (error) {
       console.error("Sign-in failed:", error);
+
       let errorMessage = 'An error occurred during sign-in. Please try again.';
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
         errorMessage = 'Invalid email or password. Please try again.';
       }
       Alert.alert('Error', errorMessage);
+
     }
   };
 
+  // Navigate to signup Page 
   const handleSignupNavigation = () => {
     navigation.navigate('Signup');
   };
 
   return (
     <View style={styles.container}>
+
        <Image
         source={require('../../assets/logo.png')}
         style={styles.loginImage}
@@ -92,6 +99,7 @@ const LoginScreen = ({ navigation }) => {
       <TouchableOpacity onPress={handleSignupNavigation}>
         <Text style={styles.signupText}>Register now</Text>
       </TouchableOpacity>
+
     </View>
   );
 };
@@ -109,6 +117,7 @@ const styles = StyleSheet.create({
     color: '#00b894', // Green color
     marginBottom: 40,
   },
+
   inputView: {
     width: '80%',
     backgroundColor: '#f2f2f2', // Light gray background
